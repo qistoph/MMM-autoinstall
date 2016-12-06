@@ -19,17 +19,18 @@ module.exports = NodeHelper.create({
 		var installNextModule = function() {
 			if (modules.length > 0) {
 				var nextModule = modules[0];
-				self.installModule(nextModule, function() {
+				self.installModule(nextModule, function(err) {
+					if (err) console.log("Error in autoinstall on module " + nextModule.module + ": " + err);
 					modules = modules.slice(1);
 					installNextModule();
 				});
 			} else {
 				// All modules are installed
-				callback();
+				return callback();
 			}
 		};
 
-		installNextModule();
+		return installNextModule();
 	},
 
 	/* installModule(module)
@@ -40,8 +41,7 @@ module.exports = NodeHelper.create({
 	installModule: function(module, callback) {
 		try {
 			if (module.disabled) {
-				callback();
-				return;
+				return callback(null);
 			}
 
 			var elements = module.module.split("/");
@@ -51,27 +51,25 @@ module.exports = NodeHelper.create({
 			if (defaultModules.indexOf(moduleName) !== -1) {
 				// Don't install default modules
 				console.log("AutoInstall - skip default module " + moduleName);
-				callback();
-				return;
+				return callback(null);
+			}
+
+			if (module.repository === undefined) {
+				// No repository configured
+				console.log("AutoInstall - skip module without repository " + moduleName);
+				return callback(null);
 			}
 
 			try {
 				fs.accessSync(moduleFolder, fs.R_OK);
 				// No exception, so dir exists
 				console.log("AutoInstall - already installed " + moduleName);
-				callback();
-				return;
+				return callback(null);
 			} catch (e) {
 				//console.log(e);
 				console.log("Missing module: " + moduleName + " (" + moduleFolder + ".");
 			}
 
-			if (module.repository === undefined) {
-				// No repository configured
-				console.log("AutoInstall - skip module without repository " + moduleName);
-				callback();
-				return;
-			}
 			console.log("Install "+moduleName+" from "+module.repository);
 
 			var self = this;
@@ -79,17 +77,14 @@ module.exports = NodeHelper.create({
 				if (err !== null) {
 					console.log(err);
 					console.log(err.stack);
-					callback();
-					return;
+					return callback(err);
 				}
 
 				self.npm_install(moduleFolder);
-				callback();
+				return callback(null);
 			});
 		} catch(e) {
-			console.log("Error while checking/installing " + module);
-			console.log(e);
-			callback();
+			return callback(e);
 		}
 	},
 
