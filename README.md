@@ -42,3 +42,15 @@ modules: [
 If only default modules or modules with a repository configured are used, you
 now only have to copy your config.js to a new system (e.g. from your dev/test
 to your actual mirror) and all modules will automatically be installed.
+
+## Updating outdated modules
+
+The default module updatenotifier will let you know when updates are available.
+You can use this module to install available updates for your modules that have
+a repository defined.
+
+To check for updates and install them, run this in your MagicMirror² directory:
+
+````bash
+nodejs modules/autoinstall/update.js
+````

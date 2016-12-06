@@ -8,7 +8,9 @@ var SimpleGit = require("simple-git");
 var child_process = require("child_process");
 
 module.exports = NodeHelper.create({
-	config: {},
+	config: {
+		update: false
+	},
 
 	loaded: function(callback) {
 		console.log("AutoInstall - check modules to install");
@@ -64,7 +66,12 @@ module.exports = NodeHelper.create({
 				fs.accessSync(moduleFolder, fs.R_OK);
 				// No exception, so dir exists
 				console.log("AutoInstall - check updates for already installed module " + moduleName);
-				return this.updateModule(moduleFolder, callback);
+
+				if (this.config.update) {
+					return this.updateModule(moduleFolder, callback);
+				} else {
+					return callback(null);
+				}
 			} catch (e) {
 				//console.log(e);
 				console.log("Missing module: " + moduleName + " (" + moduleFolder + ".");
