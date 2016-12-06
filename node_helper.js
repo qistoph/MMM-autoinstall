@@ -63,8 +63,8 @@ module.exports = NodeHelper.create({
 			try {
 				fs.accessSync(moduleFolder, fs.R_OK);
 				// No exception, so dir exists
-				console.log("AutoInstall - already installed " + moduleName);
-				return callback(null);
+				console.log("AutoInstall - check updates for already installed module " + moduleName);
+				return this.updateModule(moduleFolder, callback);
 			} catch (e) {
 				//console.log(e);
 				console.log("Missing module: " + moduleName + " (" + moduleFolder + ".");
@@ -86,6 +86,43 @@ module.exports = NodeHelper.create({
 		} catch(e) {
 			return callback(e);
 		}
+	},
+
+	updateModule: function(moduleFolder, callback) {
+		var self = this;
+		var git = SimpleGit(moduleFolder);
+		git.getRemotes(true, function(err, remotes) {
+			if (err != null) {
+				return callback(err);
+			}
+
+			if (remotes.length < 1 || remotes[0].name.length < 1) {
+				// No valid remote for folder, skip
+				return callback(null);
+			}
+
+			// Folder has .git and has at least one git remote
+			git.fetch()
+			.status(function(err, status) {
+				if (err != null) {
+					return callback(err);
+				}
+
+				if (status.behind && status.behind > 0) {
+					console.log(moduleFolder + " is " + status.behind + " commits behind.");
+					git.pull(function(err, data) {
+						if (err != null) {
+							return callback(err);
+						}
+
+						self.npm_install(moduleFolder);
+						return callback(null);
+					});
+				} else {
+					return callback(null);
+				}
+			});
+		});
 	},
 
 	npm_install: function(where) {
