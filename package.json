@@ -1,0 +1,17 @@
+{
+  "name": "autoinstall",
+  "version": "0.0.1",
+  "description": "MagicMirror² module to auto install modules",
+  "main": "autoinstall.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "author": "Chris van Marle",
+  "license": "ISC",
+  "dependencies": {
+    "simple-git": "^1.64.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1"
+  }
+}
