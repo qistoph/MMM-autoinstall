@@ -9,7 +9,6 @@
   "author": "Chris van Marle",
   "license": "ISC",
   "dependencies": {
-    "deasync": "^0.1.9",
     "simple-git": "^1.64.0"
   },
   "devDependencies": {
