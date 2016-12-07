@@ -46,8 +46,9 @@ to your actual mirror) and all modules will automatically be installed.
 ## Updating outdated modules
 
 The default module updatenotifier will let you know when updates are available.
-You can use this module to install available updates for your modules that have
-a repository defined.
+You can use `autoinstall` to install available updates for your modules that
+have a repository defined. This is not automatically done on startup, because it
+slows down the initialization of your mirror.
 
 To check for updates and install them, run this in your MagicMirror² directory:
 
