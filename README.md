@@ -1,5 +1,7 @@
 # Auto Install - MagicMirror² module
 
+[![Build Status](https://travis-ci.org/qistoph/MMM-autoinstall.svg?branch=master)](https://travis-ci.org/qistoph/MMM-autoinstall)
+
 This is a module for [MagicMirror²](https://github.com/MichMich/MagicMirror).
 Checks the configuration for modules that are used, not but installed.
 Missing modules are fetched from the configured repository and `npm install`
