@@ -6,12 +6,27 @@
   "scripts": {
     "test": "grunt"
   },
+  "pre-commit": [
+    "test"
+  ],
   "author": "Chris van Marle",
   "license": "ISC",
   "dependencies": {
     "simple-git": "^1.64.0"
   },
+  "bugs": {
+    "url": "https://github.com/qistoph/MMM-autoinstall/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qistoph/MMM-autoinstall"
+  },
   "devDependencies": {
-    "grunt": "^1.0.1"
+    "grunt": "^1.0.1",
+    "grunt-eslint": "^19.0.0",
+    "grunt-jsonlint": "^1.1.0",
+    "grunt-markdownlint": "^1.0.16",
+    "grunt-stylelint": "^0.6.0",
+    "pre-commit": "^1.2.1"
   }
 }

@@ -5,7 +5,7 @@ var config = require(__dirname + "/../../config/config.js");
 var defaultModules = require(__dirname + "/../../modules/default/defaultmodules.js");
 var SimpleGit = require("simple-git");
 //TODO: consider var npm  = require("npm");
-var child_process = require("child_process");
+var childProcess = require("child_process");
 
 module.exports = NodeHelper.create({
 	config: {
@@ -22,7 +22,10 @@ module.exports = NodeHelper.create({
 			if (modules.length > 0) {
 				var nextModule = modules[0];
 				self.installModule(nextModule, function(err) {
-					if (err) console.log("Error in autoinstall on module " + nextModule.module + ": " + err);
+					if (err) {
+						console.log("Error in autoinstall on module " + nextModule.module + ": " + err);
+						console.log(err.stack);
+					}
 					modules = modules.slice(1);
 					installNextModule();
 				});
@@ -65,9 +68,9 @@ module.exports = NodeHelper.create({
 			try {
 				fs.accessSync(moduleFolder, fs.R_OK);
 				// No exception, so dir exists
-				console.log("AutoInstall - check updates for already installed module " + moduleName);
 
 				if (this.config.update) {
+					console.log("AutoInstall - check updates for already installed module " + moduleName);
 					return this.updateModule(moduleFolder, callback);
 				} else {
 					return callback(null);
@@ -91,6 +94,8 @@ module.exports = NodeHelper.create({
 				return callback(null);
 			});
 		} catch(e) {
+			console.log("Exception running autoinstall on " + module.module);
+			console.log(e.stack);
 			return callback(e);
 		}
 	},
@@ -137,6 +142,6 @@ module.exports = NodeHelper.create({
 		where = where+"/";
 		env["NODE_ENV"] = "production";
 		console.log(where);
-		child_process.execSync("npm --prefix '" + where + "' install '" + where + "'", {cwd: where, env: process.env, stdio: "inherit"});
+		childProcess.execSync("npm --prefix '" + where + "' install '" + where + "'", {cwd: where, env: process.env, stdio: "inherit"});
 	},
 });
