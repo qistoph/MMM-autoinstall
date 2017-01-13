@@ -31,6 +31,7 @@ module.exports = NodeHelper.create({
 				});
 			} else {
 				// All modules are installed
+				console.log("All modules checked. Autoinstall done. Calling callback()");
 				return callback();
 			}
 		};
@@ -44,42 +45,36 @@ module.exports = NodeHelper.create({
 	 * argument module object - The module from config to check and install.
 	 */
 	installModule: function(module, callback) {
-		try {
-			if (module.disabled) {
+		if (module.disabled) {
+			return callback(null);
+		}
+
+		var elements = module.module.split("/");
+		var moduleName = elements[elements.length - 1];
+		var moduleFolder =  __dirname + "/../../modules/" + module.module;
+
+		if (defaultModules.indexOf(moduleName) !== -1) {
+			// Don't install default modules
+			console.log("AutoInstall - skip default module " + moduleName);
+			return callback(null);
+		}
+
+		if (module.repository === undefined) {
+			// No repository configured
+			console.log("AutoInstall - skip module without repository " + moduleName);
+			return callback(null);
+		}
+
+		if(fs.existsSync(moduleFolder)) {
+			console.log("AutoInstall - check updates for already installed module " + moduleName);
+
+			if (this.config.update) {
+				return this.updateModule(moduleFolder, callback);
+			} else {
 				return callback(null);
 			}
-
-			var elements = module.module.split("/");
-			var moduleName = elements[elements.length - 1];
-			var moduleFolder =  __dirname + "/../../modules/" + module.module;
-
-			if (defaultModules.indexOf(moduleName) !== -1) {
-				// Don't install default modules
-				console.log("AutoInstall - skip default module " + moduleName);
-				return callback(null);
-			}
-
-			if (module.repository === undefined) {
-				// No repository configured
-				console.log("AutoInstall - skip module without repository " + moduleName);
-				return callback(null);
-			}
-
-			try {
-				fs.accessSync(moduleFolder, fs.R_OK);
-				// No exception, so dir exists
-
-				if (this.config.update) {
-					console.log("AutoInstall - check updates for already installed module " + moduleName);
-					return this.updateModule(moduleFolder, callback);
-				} else {
-					return callback(null);
-				}
-			} catch (e) {
-				//console.log(e);
-				console.log("Missing module: " + moduleName + " (" + moduleFolder + ".");
-			}
-
+		} else {
+			console.log("Missing module: " + moduleName + " (" + moduleFolder + ".");
 			console.log("Install "+moduleName+" from "+module.repository);
 
 			var self = this;
@@ -93,10 +88,6 @@ module.exports = NodeHelper.create({
 				self.npm_install(moduleFolder);
 				return callback(null);
 			});
-		} catch(e) {
-			console.log("Exception running autoinstall on " + module.module);
-			console.log(e.stack);
-			return callback(e);
 		}
 	},
 
