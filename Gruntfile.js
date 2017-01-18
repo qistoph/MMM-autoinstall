@@ -3,10 +3,12 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
 		eslint: {
-			options: {
-				configFile: ".eslintrc.json"
-			},
-			target: ["*.js"]
+			main: {
+				options: {
+					configFile: ".eslintrc.json",
+				},
+				src: ["*.js"]
+			}
 		},
 		stylelint: {
 			simple: {
@@ -29,7 +31,8 @@ module.exports = function(grunt) {
 				options: {
 					config: {
 						"default": true,
-						"MD033": false,
+						"MD013": {"tables": false},
+						"MD033": {"allowed_elements": ["br"]}
 					}
 				},
 				src: ["*.md"]
@@ -43,5 +46,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-stylelint");
 	grunt.loadNpmTasks("grunt-jsonlint");
 	grunt.loadNpmTasks("grunt-markdownlint");
+	grunt.loadNpmTasks("grunt-staged");
 	grunt.registerTask("default", ["eslint", /*"stylelint",*/ "jsonlint", "markdownlint"]);
+	grunt.registerTask("precommit", ["staged:eslint", /*"staged:stylelint",*/ "staged:jsonlint", "staged:markdownlint"]);
 };
