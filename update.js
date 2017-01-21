@@ -1,3 +1,5 @@
+global.root_path = __dirname + "/../../";
+
 var AutoInstall = require(__dirname + "/node_helper.js");
 
 var instance = new AutoInstall();

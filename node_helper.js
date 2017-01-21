@@ -1,8 +1,8 @@
 var NodeHelper = require("node_helper");
 
 var fs = require("fs");
-var config = require(__dirname + "/../../config/config.js");
-var defaultModules = require(__dirname + "/../../modules/default/defaultmodules.js");
+var config = require(global.root_path + "/config/config.js");
+var defaultModules = require(global.root_path + "/modules/default/defaultmodules.js");
 var SimpleGit = require("simple-git");
 //TODO: consider var npm  = require("npm");
 var childProcess = require("child_process");
@@ -39,6 +39,16 @@ module.exports = NodeHelper.create({
 		return installNextModule();
 	},
 
+	socketNotificationReceived: function(notification, payload) {
+		console.log(this.name + " received a socket notification: " + notification + " - Payload: " + payload);
+		if (notification === "AUTO_UPDATE") {
+			this.config.update = true;
+			this.loaded(function() {
+				console.log("Done AUTO_UPDATE");
+			});
+		}
+	},
+
 	/* installModule(module)
 	 * Installs a missing module if it has a git repository.
 	 *
@@ -51,7 +61,7 @@ module.exports = NodeHelper.create({
 
 		var elements = module.module.split("/");
 		var moduleName = elements[elements.length - 1];
-		var moduleFolder =  __dirname + "/../../modules/" + module.module;
+		var moduleFolder =  global.root_path + "/modules/" + module.module;
 
 		if (defaultModules.indexOf(moduleName) !== -1) {
 			// Don't install default modules
