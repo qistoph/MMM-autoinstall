@@ -69,12 +69,6 @@ module.exports = NodeHelper.create({
 			return callback(null);
 		}
 
-		if (module.repository === undefined) {
-			// No repository configured
-			console.log("AutoInstall - skip module without repository " + moduleName);
-			return callback(null);
-		}
-
 		if(fs.existsSync(moduleFolder)) {
 			console.log("AutoInstall - check updates for already installed module " + moduleName);
 
@@ -83,22 +77,28 @@ module.exports = NodeHelper.create({
 			} else {
 				return callback(null);
 			}
-		} else {
-			console.log("Missing module: " + moduleName + " (" + moduleFolder + ".");
-			console.log("Install "+moduleName+" from "+module.repository);
-
-			var self = this;
-			SimpleGit().clone(module.repository, moduleFolder, function(err, data) {
-				if (err !== null) {
-					console.log(err);
-					console.log(err.stack);
-					return callback(err);
-				}
-
-				self.npm_install(moduleFolder);
-				return callback(null);
-			});
 		}
+
+		if (module.repository === undefined) {
+			// No repository configured
+			console.log("AutoInstall - skip module without repository " + moduleName);
+			return callback(null);
+		}
+
+		console.log("Missing module: " + moduleName + " (" + moduleFolder + ".");
+		console.log("Install "+moduleName+" from "+module.repository);
+
+		var self = this;
+		SimpleGit().clone(module.repository, moduleFolder, function(err, data) {
+			if (err !== null) {
+				console.log(err);
+				console.log(err.stack);
+				return callback(err);
+			}
+
+			self.npm_install(moduleFolder);
+			return callback(null);
+		});
 	},
 
 	updateModule: function(moduleFolder, callback) {
