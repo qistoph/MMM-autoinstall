@@ -69,14 +69,16 @@ module.exports = NodeHelper.create({
 			return callback(null);
 		}
 
+		console.log("AutoInstall checking " + moduleFolder);
 		if(fs.existsSync(moduleFolder)) {
-			console.log("AutoInstall - check updates for already installed module " + moduleName);
-
 			if (this.config.update) {
+				console.log("AutoInstall - check updates for already installed module " + moduleName);
 				return this.updateModule(moduleFolder, callback);
 			} else {
 				return callback(null);
 			}
+		} else {
+			console.log("AutoInstall - skip for existing dir " + moduleName);
 		}
 
 		if (module.repository === undefined) {
@@ -111,6 +113,7 @@ module.exports = NodeHelper.create({
 
 			if (remotes.length < 1 || remotes[0].name.length < 1) {
 				// No valid remote for folder, skip
+				console.log(moduleName + " has no remote git repo. Not updated.");
 				return callback(null);
 			}
 
