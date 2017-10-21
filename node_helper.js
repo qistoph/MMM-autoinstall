@@ -113,7 +113,7 @@ module.exports = NodeHelper.create({
 
 			if (remotes.length < 1 || remotes[0].name.length < 1) {
 				// No valid remote for folder, skip
-				console.log(moduleName + " has no remote git repo. Not updated.");
+				console.log(moduleFolder + " has no remote git repo. Not updated.");
 				return callback(null);
 			}
 
