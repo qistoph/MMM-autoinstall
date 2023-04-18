@@ -12,7 +12,7 @@ module.exports = NodeHelper.create({
 		update: false
 	},
 
-	loaded: function(callback) {
+	loaded: async function() {
 		console.log("AutoInstall - check modules to install");
 
 		var self = this;
@@ -31,8 +31,7 @@ module.exports = NodeHelper.create({
 				});
 			} else {
 				// All modules are installed
-				console.log("All modules checked. Autoinstall done. Calling callback()");
-				return callback();
+				console.log("All modules checked. Autoinstall done.");
 			}
 		};
 
@@ -65,7 +64,7 @@ module.exports = NodeHelper.create({
 
 		if (defaultModules.indexOf(moduleName) !== -1) {
 			// Don't install default modules
-			console.log("AutoInstall - skip default module " + moduleName);
+			console.log("AutoInstall skip default module " + moduleName);
 			return callback(null);
 		}
 
@@ -75,6 +74,7 @@ module.exports = NodeHelper.create({
 				console.log("AutoInstall - check updates for already installed module " + moduleName);
 				return this.updateModule(moduleFolder, callback);
 			} else {
+				console.log("Autoinstall - update check disabled");
 				return callback(null);
 			}
 		} else {
@@ -118,8 +118,11 @@ module.exports = NodeHelper.create({
 			}
 
 			// Folder has .git and has at least one git remote
-			git.fetch()
-			.status(function(err, status) {
+			git.fetch(function(err, status) {
+				if (err != null) {
+					return callback(err);
+				}
+			}).status(function(err, status) {
 				if (err != null) {
 					return callback(err);
 				}
