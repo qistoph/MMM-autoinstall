@@ -54,13 +54,14 @@ module.exports = NodeHelper.create({
 	 * argument module object - The module from config to check and install.
 	 */
 	installModule: function(module, callback) {
-		if (module.disabled) {
-			return callback(null);
-		}
-
 		var elements = module.module.split("/");
 		var moduleName = elements[elements.length - 1];
 		var moduleFolder =  global.root_path + "/modules/" + module.module;
+
+		if (module.disabled) {
+			console.log("AutoInstall skip disable module " + moduleName);
+			return callback(null);
+		}
 
 		if (defaultModules.indexOf(moduleName) !== -1) {
 			// Don't install default modules
