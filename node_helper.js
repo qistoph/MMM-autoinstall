@@ -130,7 +130,7 @@ module.exports = NodeHelper.create({
 
 				if (status.behind && status.behind > 0) {
 					console.log(moduleFolder + " is " + status.behind + " commits behind.");
-					git.pull(function(err, data) {
+					git.pull({"--rebase":"true"}, function(err, data) {
 						if (err != null) {
 							return callback(err);
 						}
