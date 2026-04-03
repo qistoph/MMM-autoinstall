@@ -3,8 +3,6 @@ global.root_path = __dirname + "/../../";
 // Load internal alias resolver
 require("../../js/alias-resolver");
 
-require("module-alias/register");
-
 var AutoInstall = require(__dirname + "/node_helper.js");
 
 var instance = new AutoInstall();

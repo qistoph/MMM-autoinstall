@@ -2,7 +2,7 @@ var NodeHelper = require("node_helper");
 
 var fs = require("fs");
 var config = require(global.root_path + "/config/config.js");
-var defaultModules = require(global.root_path + "/modules/default/defaultmodules.js");
+var defaultModules = require(global.root_path + "/defaultmodules/defaultmodules.js");
 var SimpleGit = require("simple-git");
 //TODO: consider var npm  = require("npm");
 var childProcess = require("child_process");
